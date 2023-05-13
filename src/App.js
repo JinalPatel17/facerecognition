@@ -12,7 +12,7 @@ import './App.css';
 
 //You must add your own API key here from Clarifai.
 const app = new Clarifai.App({
- apiKey: 'YOUR API KEY HERE' //api key of clarifai of facedetection
+ apiKey: '5592d00ddae74e97887d7d72ef03b760' //api key of clarifai of facedetection
 });
 
 class App extends Component {
@@ -22,7 +22,7 @@ class App extends Component {
       input: '',
       imageUrl: '',
       box: {},
-      route: 'signin',
+      route: 'home',
       isSignedIn: false,
       user: {
         id: '',
@@ -78,7 +78,7 @@ class App extends Component {
     // .predict(Clarifai.FACE_DETECT_MODEL, this.state.input)
     // to:
     // .predict('53e1df302c079b3db8a0a36033ed2d15', this.state.input)
-        Clarifai.FACE_DETECT_MODEL,
+        Clarifai.face-detection,
         this.state.input)
       .then(response => {
         console.log('hi', response)
