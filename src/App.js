@@ -14,7 +14,57 @@ import './App.css';
 const app = new Clarifai.App({
  apiKey: '5592d00ddae74e97887d7d72ef03b760' //api key of clarifai of facedetection
 });
+//js code here from clarifai
+const returnClarifaiRequestOptions = (imageUrl) => {
+  ///////////////////////////////////////////////////////////////////////////////////////////////////
+    // In this section, we set the user authentication, user and app ID, model details, and the URL
+    // of the image we want as an input. Change these strings to run your own example.
+    //////////////////////////////////////////////////////////////////////////////////////////////////
 
+    // Your PAT (Personal Access Token) can be found in the portal under Authentification
+    const PAT = '6a2258b0a4d24f3c805df81f82aaf445';
+    // Specify the correct user_id/app_id pairings
+    // Since you're making inferences outside your app's scope
+    const USER_ID = 'd1p01i1lqqb6';       
+    const APP_ID = 'Facerecognition17';
+    // Change these to whatever model and image URL you want to use
+    const MODEL_ID = 'face-detection';
+    const IMAGE_URL = imageUrl;
+
+    ///////////////////////////////////////////////////////////////////////////////////
+    // YOU DO NOT NEED TO CHANGE ANYTHING BELOW THIS LINE TO RUN THIS EXAMPLE
+    ///////////////////////////////////////////////////////////////////////////////////
+
+    const raw = JSON.stringify({
+        "user_app_id": {
+            "user_id": USER_ID,
+            "app_id": APP_ID
+        },
+        "inputs": [
+            {
+                "data": {
+                    "image": {
+                        "url": IMAGE_URL
+                    }
+                }
+            }
+        ]
+    });
+
+    requestOptions = {
+        method: 'POST',
+        headers: {
+            'Accept': 'application/json',
+            'Authorization': 'Key ' + PAT
+        },
+        body: raw
+    };
+    return requestOptions
+}
+
+    // NOTE: MODEL_VERSION_ID is optional, you can also call prediction with the MODEL_ID only
+    // https://api.clarifai.com/v2/models/{YOUR_MODEL_ID}/outputs
+    // this will default to the latest version_id
 class App extends Component {
   constructor() {
     super();
@@ -80,10 +130,14 @@ class App extends Component {
     // .predict('53e1df302c079b3db8a0a36033ed2d15', this.state.input)
         Clarifai.face-detection,
         this.state.input)
-      .then(response => {
-        console.log('hi', response)
-        if (response) {
-          fetch('http://localhost:3000/image', {
+        fetch("https://api.clarifai.com/v2/models/" + 'face-detection' + "/outputs", returnClarifaiRequestOptions(this.state.input))
+        .then(response => response.text())
+        .then(result => console.log(result))
+        .catch(error => console.log('error', error))
+        .then(response => {
+            console.log('hi', response)
+            if (response) {
+            fetch('http://localhost:3000/image', {
             method: 'put',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({
