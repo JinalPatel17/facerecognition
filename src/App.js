@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import ParticlesBg from 'particles-bg'
-import Clarifai from 'clarifai';
+// import Clarifai from 'clarifai';
 import FaceRecognition from './components/FaceRecognition/FaceRecognition';
 import Navigation from './components/Navigation/Navigation';
 import Signin from './components/Signin/Signin';
@@ -11,9 +11,9 @@ import Rank from './components/Rank/Rank';
 import './App.css';
 
 //You must add your own API key here from Clarifai.
-const app = new Clarifai.App({
- apiKey: '5592d00ddae74e97887d7d72ef03b760' //api key of clarifai of facedetection
-});
+// const app = new Clarifai.App({
+//  apiKey: '5592d00ddae74e97887d7d72ef03b760' //api key of clarifai of facedetection
+// });
 //js code here from clarifai
 const returnClarifaiRequestOptions = (imageUrl) => {
   ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -51,7 +51,7 @@ const returnClarifaiRequestOptions = (imageUrl) => {
         ]
     });
 
-    requestOptions = {
+    const requestOptions = {
         method: 'POST',
         headers: {
             'Accept': 'application/json',
@@ -72,7 +72,7 @@ class App extends Component {
       input: '',
       imageUrl: '',
       box: {},
-      route: 'signin',
+      route: 'home',
       isSignedIn: false,
       user: {
         id: '',
@@ -117,8 +117,7 @@ class App extends Component {
 
   onButtonSubmit = () => {
     this.setState({imageUrl: this.state.input});
-    app.models
-      .predict(
+    // app.models.predict(Clarifai.face-detection,this.state.input)
     // HEADS UP! Sometimes the Clarifai Models can be down or not working as they are constantly getting updated.
     // A good way to check if the model you are using is up, is to check them on the clarifai website. For example,
     // for the Face Detect Mode: https://www.clarifai.com/models/face-detection
@@ -128,14 +127,12 @@ class App extends Component {
     // .predict(Clarifai.FACE_DETECT_MODEL, this.state.input)
     // to:
     // .predict('53e1df302c079b3db8a0a36033ed2d15', this.state.input)
-        Clarifai.face-detection,
-        this.state.input)
         fetch("https://api.clarifai.com/v2/models/" + 'face-detection' + "/outputs", returnClarifaiRequestOptions(this.state.input))
-        .then(response => response.text())
-        .then(result => console.log(result))
-        .catch(error => console.log('error', error))
+        .then(response => response.json())
+        // .then(result => console.log(result))
+        // .catch(error => console.log('error', error))
         .then(response => {
-            console.log('hi', response)
+            // console.log('hi', response)
             if (response) {
             fetch('http://localhost:3000/image', {
             method: 'put',
